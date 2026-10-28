@@ -1,0 +1,12 @@
+.venv/
+.runtime/
+__pycache__/
+.ipynb_checkpoints/
+.idea/
+.vscode/
+*.exe
+*.dll
+*.class
+target/
+build/
+dist/

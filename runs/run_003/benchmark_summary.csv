@@ -1,0 +1,4 @@
+heuristic,accuracy_pct,within_5_pct_accuracy,avg_abs_gap,max_abs_gap,avg_rel_gap_pct,max_rel_gap_pct,avg_rel_gap_pct_with_5_tolerance,max_rel_gap_pct_with_5_tolerance,matched,matched_within_5_pct,compared
+"Greedy + local O(n^4) [H3]",88.8,92.48,749.607,56268,2.30102,716.186,2.20623,716.186,4440,4624,5000
+"One-shot savings O(n^3) [H2]",70.14,77.22,1784.72,64625,11.552,1500,11.38,1500,3507,3861,5000
+"Contribution-ratio O(n^2) [H1]",68.54,76.04,1718.96,55661,14.8728,2641.67,14.6935,2641.67,3427,3802,5000
