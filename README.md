@@ -1,45 +1,61 @@
-# Flow-shop scheduling with job rejection
+# Flow-Shop Scheduling with Job Rejection
 
-מימוש C++17 לשלוש יוריסטיקות לבחירת עבודות לדחייה תחת תקציב, ולפתרון בסיס המונה קבוצות דחייה ומשתמש ב־WSPT-MCI לתזמון העבודות שנותרו.
+An academic research project implemented in C++17. It evaluates three heuristics for selecting jobs to reject under a rejection budget in a proportionate flow shop. The reference baseline enumerates feasible rejection sets and uses WSPT-MCI to schedule the remaining jobs.
 
-## קבצים
+## Project Files
 
-- `exactRejectionFlowshop.cpp` — H1, H2, H3, פתרון הבסיס ויצירת הניסויים.
-- `compare_runs.cpp` — שילוב תוצאות ההרצות ויצירת טבלאות וגרפים.
-- `runs/run_001` עד `run_010` — הנתונים ששימשו לתוצאות המסכמות בדוח.
-- `runs/comparison` — טבלאות השוואה וגרפים בין ההרצות.
+- `exactRejectionFlowshop.cpp`: H1, H2, H3, the reference baseline, and experiment generation.
+- `compare_runs.cpp`: aggregation of saved runs and generation of comparison tables and charts.
+- `runs/run_001` through `runs/run_010`: the ten runs used for the aggregate results in the report.
+- `runs/comparison`: comparison tables and charts across runs.
+- [docs/Final_Project1.pdf](docs/Final_Project1.pdf): the final academic report.
+- `docs/report_comparison.csv`: comparison of aggregate metrics from saved results with Tables 1–6 in the report.
 
-## קימפול
+## Algorithms
 
-נדרש מהדר התומך ב־C++17.
+- **H1 — Contribution Ratio:** ranks jobs by their initial weighted completion-time contribution relative to rejection cost.
+- **H2 — One-Shot Savings:** ranks jobs by the schedule savings from removing each job individually, relative to rejection cost.
+- **H3 — Iterative Greedy with Local Search:** recalculates rejection savings during selection and then checks one-for-one swaps.
 
-```powershell
+On small instances, the heuristics are compared with the reference baseline. On larger instances, they are compared with each other; the best observed result is not assumed to be globally optimal.
+
+## Build
+
+Use a compiler with C++17 support. For example, with GCC:
+
+```sh
 g++ -std=c++17 -O2 -Wall -Wextra -pedantic exactRejectionFlowshop.cpp -o exactRejectionFlowshop.exe
 g++ -std=c++17 -O2 -Wall -Wextra -pedantic compare_runs.cpp -o compare_runs.exe
 ```
 
-## עיון בתוצאות הקיימות
+The following commands use Windows PowerShell syntax. On macOS or Linux, use `./` instead of `.\` to run the executables.
 
-הנתונים הדרושים לקריאת התוצאות כבר נמצאים בתיקייה. אין צורך להריץ את הניסוי מחדש כדי לעיין בהם.
+## Inspect Saved Results
 
-ליצירת סיכום מתוך תיקיות ההרצות הקיימות:
+The experiment data is already included, so rerunning the benchmark is not required. To regenerate summaries from the saved run directories:
 
 ```powershell
 .\compare_runs.exe compare runs
 ```
 
-הפעולה כותבת מחדש את פלטי ההשוואה והגרפים תחת `runs/comparison`.
+This overwrites comparison outputs and charts under `runs/comparison`.
 
-## יצירת ניסוי חדש
+## Run a New Experiment
 
 ```powershell
 .\exactRejectionFlowshop.exe
 ```
 
-ברירת המחדל בקוד מריצה 5,000 מקרים קטנים ו־150 מקרים גדולים, עד 200 עבודות, ולכן ההרצה עשויה להיות ממושכת. היא יוצרת תיקיית `run_XXX` חדשה וכותבת מחדש גם את קובצי ה־CSV בשורש תיקיית הקוד. הוספת הרצות תשנה את הסיכום הבא של כל תיקיות ההרצה.
+By default, the program runs 5,000 small instances and 150 larger instances, with up to 200 jobs. This may take a substantial amount of time. It creates a new `run_XXX` directory and overwrites the CSV files in the project root. Additional runs change the next summary generated across the run directories.
 
-הזרע האקראי נבחר בזמן ההרצה כאשר `randomSeed = 0`, ולכן הרצה חדשה לא צפויה לייצר את אותם מספרים. קלטי המקרים הקטנים נשמרו ב־`benchmark_trial_jobs.csv`. במקרים הגדולים נשמרו תוצאות ומדידות זמן, אך לא נמצאו קלטי העבודות המלאים לשחזורם.
+## Saved Results
 
-## Report
+The ten saved runs contain **50,000 quality-benchmark instances** and **1,500 scalability instances**. All 27 aggregate metrics in Tables 1–6 match the saved instance-level results after rounding. H3 recorded an **89.19% baseline match rate** and a **2.22% mean relative gap** in the quality benchmark. It achieved the best observed value in **1,385 of 1,500** scalability instances.
 
-The final academic report is available in [docs/Final_Project1.pdf](docs/Final_Project1.pdf). The ten saved runs contain 50,000 quality benchmark instances and 1,500 scalability instances. The aggregate metrics in Tables 1–6 match the saved instance-level results after rounding.
+The main source was compiled with GCC 13.1.0. Replaying 100 saved small instances from each run, or 1,000 in total, reproduced the stored objective values for the baseline and all three heuristics.
+
+## Reproducibility and Scope
+
+With `randomSeed = 0`, a seed is selected at runtime, so new runs are not expected to generate identical samples. Small-instance inputs are stored in each run's `benchmark_trial_jobs.csv`. Larger-instance results and timings are included, but complete job inputs were not found in the project files and could not be replayed.
+
+Matching the report verifies the recorded results; it is not a mathematical proof of algorithmic correctness or optimality. Saved running times were measured in the original experiment environment.
